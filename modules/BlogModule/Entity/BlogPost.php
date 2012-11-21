@@ -17,6 +17,10 @@ class BlogPost {
 				$this->{'_' . $key} = $val;
 			}
 		}
+
+		if ( !defined('MB_ACTIVE') ) {
+			define('MB_ACTIVE', defined('MB_CASE_UPPER'));
+		}
 	}
 	
 	public function getID() {
@@ -65,6 +69,44 @@ class BlogPost {
 	
 	public function getTags() {
 		return $this->_tags;
+	}
+
+	/**
+	 * Get a snippet of the content of this blog post
+	 * as a summary.
+	 *
+	 * @param Integer $numChars The number of characters that this snippet should contain.
+	 *
+	 * @return String The snippet.
+	 */
+	public function getSnippet($numChars = 150)
+	{
+
+		$content = strip_tags($this->getContent());
+
+
+		if ( strlen($content) > $numChars ) {
+			if ( MB_ACTIVE ) {
+				$content = mb_substr($content, 0, $numChars);
+			} else {
+				$content = substr($content, 0, $numChars);
+			}
+		}
+
+		return $content;
+
+	}
+
+	/**
+	 * Fetch the url for this blog post.
+	 * 
+	 * @param  String $page The base page path for this blog post.
+	 * 
+	 * @return String       The url to this blog post.
+	 */
+	public function getUrl( $page = 'blog/' )
+	{
+		return $page . $this->getID() . '/' . str_replace(' ', '-', strtolower($this->getTitle()));
 	}
     
 }

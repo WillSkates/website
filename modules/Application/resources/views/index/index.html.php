@@ -96,6 +96,19 @@
             <li class="cumbernauld"><a href="#" onclick="javascript: void(0);" title="NHS Local" target="_blank"><img src="<?=$view['assets']->getUrl('images/who/cumbernauld.png');?>" alt=""></a></li>
         </ul>
     </div>
+
+    <div class="latest-blog-posts">
+        <p class="heading">Latest Posts</p>
+        <ul class="clearfix">
+            <?php foreach ($latestBP as &$post): ?>
+            <li>
+                <h3><?=$post->getTitle();?></h3>
+                <p><?=$post->getSnippet(200);?></p>
+                <a href="<?=$view['assets']->getUrl($post->getUrl());?>" title="<?=$post->getTitleForLink();?>">Read More</a>
+            </li>
+            <?php endforeach; ?>
+        </ul>
+    </div>
     
     <div class="bottom">
         <a class="fork" href="http://www.github.com/ppi/website" title="Fork me on github"><img

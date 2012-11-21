@@ -2,7 +2,8 @@
 namespace Application\Controller;
 
 use Application\Controller\Shared as SharedController;
-
+use BlogModule\Storage\BlogPost as BPStorage;
+ 
 class Index extends SharedController
 {
     public function indexAction()
@@ -11,7 +12,11 @@ class Index extends SharedController
         $downloadCounter->setIP($this->getIP());
         
         $downloadCount = $downloadCounter->getDownloadCount();
-        return $this->render('Application:index:index.html.php', compact('downloadCount'));
+
+        $bs = new BPStorage($this->getService('datasource'));
+        $latestBP = $bs->getLatest(4);
+
+        return $this->render('Application:index:index.html.php', compact('downloadCount', 'latestBP'));
     }
     
     public function downloadAction()

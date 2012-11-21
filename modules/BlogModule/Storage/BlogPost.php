@@ -36,6 +36,25 @@ class BlogPost extends BaseStorage
         return parent::insert($data);
             
     }
+
+    /**
+     * Prepare a list of blog post entities from
+     * an array of results.
+     *
+     * @param array $rows The rows within the database result set.
+     *
+     * @return array A list of Blog post entities.
+     */
+    protected function entitiesFromArray($rows)
+    {
+
+        foreach ($rows as &$row) {
+            $row = new BlogPostEntity($row);
+        }
+
+        return $rows;
+
+    }
     
     /**
      * Get all the newsletter entries in the system
@@ -55,17 +74,38 @@ class BlogPost extends BaseStorage
         if($rows === false) {
             throw new \Exception('No blog entries found');
         }
-        
-        $entities = array();
-        
-        foreach($rows as $row) {
-            $entities[] = new BlogPostEntity($row);
-        }
-        
-        return $entities;
+
+        return $this->entitiesFromArray($rows);
         
     }
-    
+
+    /**
+     * Get a list of the x latest posts.
+     *
+     * @param  Integer $num The number of posts that you want to get.
+     * 
+     * @return array The latest x posts.
+     * 
+     * @throws \Exception When no rows exist
+     */    
+    public function getLatest($num = 5)
+    {
+        $rows = $this->_conn->createQueryBuilder()
+            ->select('bp.*')
+            ->from($this->_meta['table'], 'bp')
+            ->andWhere('bp.published = 1')
+            ->orderBy('date_created', 'DESC')
+            ->setFirstResult(0)
+            ->setMaxResults(5)
+            ->execute()->fetchAll($this->getFetchMode());
+        
+        if($rows === false) {
+            throw new \Exception('No blog entries found');
+        }
+        
+        return $this->entitiesFromArray($rows);
+    }
+
     public function getByID($id)
     {
         
