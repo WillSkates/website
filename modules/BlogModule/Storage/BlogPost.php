@@ -48,11 +48,12 @@ class BlogPost extends BaseStorage
     protected function entitiesFromArray($rows)
     {
 
-        foreach ($rows as &$row) {
-            $row = new BlogPostEntity($row);
+        $array = array();
+        foreach ($rows as $row) {
+            $array[] = new BlogPostEntity($row);
         }
 
-        return $rows;
+        return $array;
 
     }
     
@@ -90,13 +91,14 @@ class BlogPost extends BaseStorage
      */    
     public function getLatest($num = 5)
     {
+
         $rows = $this->_conn->createQueryBuilder()
             ->select('bp.*')
             ->from($this->_meta['table'], 'bp')
             ->andWhere('bp.published = 1')
             ->orderBy('date_created', 'DESC')
             ->setFirstResult(0)
-            ->setMaxResults(5)
+            ->setMaxResults($num)
             ->execute()->fetchAll($this->getFetchMode());
         
         if($rows === false) {
@@ -104,6 +106,7 @@ class BlogPost extends BaseStorage
         }
         
         return $this->entitiesFromArray($rows);
+
     }
 
     public function getByID($id)
@@ -142,6 +145,7 @@ class BlogPost extends BaseStorage
         }
         
         return $related;
+        
     }
     
     public function getTagsGroupedByPostID($posts, $blogPostTagStorage)

@@ -85,12 +85,10 @@ class BlogPost {
 		$content = strip_tags($this->getContent());
 
 
-		if ( strlen($content) > $numChars ) {
-			if ( MB_ACTIVE ) {
-				$content = mb_substr($content, 0, $numChars);
-			} else {
-				$content = substr($content, 0, $numChars);
-			}
+		if ( MB_ACTIVE && mb_strlen($content) > $numChars ) {
+			$content = mb_substr($content, 0, $numChars);
+		} else if ( !MB_ACTIVE && strlen($content) > $numChars ) {
+			$content = substr($content, 0, $numChars);
 		}
 
 		return $content;

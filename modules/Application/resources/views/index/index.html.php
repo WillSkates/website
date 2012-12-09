@@ -102,8 +102,8 @@
         <ul class="clearfix">
             <?php foreach ($latestBP as &$post): ?>
             <li>
-                <h3><?=$post->getTitle();?></h3>
-                <p><?=$post->getSnippet(200);?></p>
+                <h3><?=$view->escape($post->getTitle());?></h3>
+                <p><?=$view->escape($post->getSnippet(200));?></p>
                 <a href="<?=$view['assets']->getUrl($post->getUrl());?>" title="<?=$post->getTitleForLink();?>">Read More</a>
             </li>
             <?php endforeach; ?>
